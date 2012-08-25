@@ -22,7 +22,7 @@ public class TPIIAAG {
         // TODO code application logic here
         try {
             UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
+                    UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
         }
 
