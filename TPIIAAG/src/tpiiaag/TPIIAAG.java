@@ -4,6 +4,8 @@
  */
 package tpiiaag;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author German
@@ -14,6 +16,8 @@ public class TPIIAAG {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        JOptionPane.showMessageDialog(null, "Esteban se la come", "MENSAJE MUY IMPORTANTE", JOptionPane.INFORMATION_MESSAGE);
+        
     }
 }
