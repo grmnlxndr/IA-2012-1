@@ -5,6 +5,9 @@
 package tpiiaag;
 
 import javax.swing.JOptionPane;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
+import sun.swing.DefaultLayoutStyle;
 
 /**
  *
@@ -17,7 +20,13 @@ public class TPIIAAG {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        
+        try {
+            UIManager.setLookAndFeel(
+                    UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+        }
+
+
         //RUBEN GIL DE MIERDA............................
         JOptionPane.showMessageDialog(null, "Esteban se la come", "MENSAJE MUY IMPORTANTE", JOptionPane.INFORMATION_MESSAGE);
     }
