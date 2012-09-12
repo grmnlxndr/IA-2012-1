@@ -19,6 +19,10 @@ public class Individuo {
     public static final String PROP_P2 = "p2";
     public static final String PROP_P3 = "p3";
     public static final String PROP_P4 = "p4";
+
+    public static Individuo crearUnIndividuo(short p1, short p2, short p3, short p4) {
+        return new Individuo(p1, p2, p3, p4);
+    }
 //  Variables privadas
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private float aptitud;
@@ -28,11 +32,15 @@ public class Individuo {
     private short p4;
 //  Constructor
 
-    public Individuo() {
+    private Individuo(short p1, short p2, short p3, short p4) {
         setAptitud(0);
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+        this.p4 = p4;
     }
-//  Agregar un escuchador para las propiedades de esta clase
 
+//  Agregar un escuchador para las propiedades de esta clase
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
@@ -97,12 +105,6 @@ public class Individuo {
         pcs.firePropertyChange(PROP_APTITUD, oldAptitud, aptitud);
     }
 
-    public float calcularAptitud() {
-        float aptitudNueva = 0;
-//        COODIGO
-        setAptitud(aptitudNueva);
-        return aptitud;
-    }
 
     public Individuo cruzarseCon(Individuo unIndividuo) {
         Individuo nuevoIndividuo = null;
@@ -112,5 +114,15 @@ public class Individuo {
 
     public void mutarse() {
     }
-    
+
+    public float evaluarAptitud(int m1, int m2, int m3, int m4, int m5, int m6, int m7, int m8) {
+       float nuevaAptitud = 0;
+       //INICIOCODIGO
+       
+       
+       
+       //FINCODIGO
+       setAptitud(nuevaAptitud);
+       return nuevaAptitud;
+    }
 }
