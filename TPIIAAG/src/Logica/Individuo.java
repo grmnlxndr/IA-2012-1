@@ -19,9 +19,15 @@ public class Individuo {
     public static final String PROP_P2 = "p2";
     public static final String PROP_P3 = "p3";
     public static final String PROP_P4 = "p4";
+    private static final byte[][] MMinimos = {
+        {80, 0, 44, 72, 0, 55, 22, 0},
+        {15, 49, 12, 0, 50, 21, 0, 70},
+        {0, 84, 0, 34, 62, 62, 43, 0},
+        {41, 0, 0, 74, 24, 82, 55, 52}
+    };
 
-    public static Individuo crearUnIndividuo(short p1, short p2, short p3, short p4) {
-        return new Individuo(p1, p2, p3, p4);
+    public static Individuo crearUnIndividuo(int p1, int p2, int p3, int p4) {
+        return new Individuo((short) p1, (short) p2, (short) p3, (short) p4);
     }
 //  Variables privadas
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -105,7 +111,6 @@ public class Individuo {
         pcs.firePropertyChange(PROP_APTITUD, oldAptitud, aptitud);
     }
 
-
     public Individuo cruzarseCon(Individuo unIndividuo) {
         Individuo nuevoIndividuo = null;
 
@@ -115,14 +120,31 @@ public class Individuo {
     public void mutarse() {
     }
 
-    public float evaluarAptitud(int m1, int m2, int m3, int m4, int m5, int m6, int m7, int m8) {
-       float nuevaAptitud = 0;
-       //INICIOCODIGO
-       
-       
-       
-       //FINCODIGO
-       setAptitud(nuevaAptitud);
-       return nuevaAptitud;
+    public float evaluarAptitud(int m1ing, int m2ing, int m3ing, int m4ing, int m5ing, int m6ing, int m7ing, int m8ing) {
+        float nuevaAptitud = 0;
+        //INICIOCODIGO
+
+        /*COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODIGOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+         * OOOOOO
+         * OOOOOOO
+         * O
+         * O
+         * OO
+         * OOO
+         */
+
+        //FINCODIGO
+        setAptitud(nuevaAptitud);
+        return nuevaAptitud;
     }
+
+//    public static void main(String[] args) {
+//        Individuo a = Individuo.crearUnIndividuo(10, 2, 3, 3);
+//        for (int i = 0; i < 4; i++) {
+//            for (int j = 0; j < 8; j++) {
+//                System.out.print(Individuo.MMinimos[i][j] + " ");
+//            }
+//            System.out.println();
+//        }
+//    }
 }
