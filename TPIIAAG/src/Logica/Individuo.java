@@ -31,6 +31,12 @@ public class Individuo {
         {0, 99, 0, 55, 78, 70, 65, 0},
         {55, 0, 0, 95, 35, 88, 74, 78}
     };
+    private static final byte[][] Rangos = {
+        {15, 0, 21, 16, 0, 22, 28, 0},
+        {20, 6, 16, 0, 10, 23, 0, 21},
+        {0, 15, 0, 21, 16, 8, 22, 0},
+        {14, 0, 0, 21, 11, 6, 19, 26}
+    };
     private static final byte[] Utilidad = {90, 115, 120, 100};
 //  Variables privadas
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -48,7 +54,7 @@ public class Individuo {
         this.p3 = p3;
         this.p4 = p4;
     }
-    
+
     public static Individuo crearUnIndividuo(int p1, int p2, int p3, int p4) {
         return new Individuo((short) p1, (short) p2, (short) p3, (short) p4);
     }
@@ -62,7 +68,7 @@ public class Individuo {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
-    
+
     public PropertyChangeSupport getPcs() {
         return pcs;
     }
@@ -71,19 +77,19 @@ public class Individuo {
     public short getP1() {
         return p1;
     }
-    
+
     public short getP2() {
         return p2;
     }
-    
+
     public short getP3() {
         return p3;
     }
-    
+
     public short getP4() {
         return p4;
     }
-    
+
     public float getAptitud() {
         return aptitud;
     }
@@ -94,25 +100,25 @@ public class Individuo {
         this.p1 = p1;
         pcs.firePropertyChange(PROP_P1, old, p1);
     }
-    
+
     public void setP2(short p2) {
         short old = this.p2;
         this.p2 = p2;
         pcs.firePropertyChange(PROP_P2, old, p2);
     }
-    
+
     public void setP3(short p3) {
         short old = this.p3;
         this.p3 = p3;
         pcs.firePropertyChange(PROP_P3, old, p3);
     }
-    
+
     public void setP4(short p4) {
         short old = this.p4;
         this.p4 = p4;
         pcs.firePropertyChange(PROP_P4, old, p4);
     }
-    
+
     private void setAptitud(float aptitud) {
         float oldAptitud = this.aptitud;
         this.aptitud = aptitud;
@@ -122,7 +128,7 @@ public class Individuo {
     //Metodo de Cruza de dos individuos
     public Individuo cruzarseCon(Individuo unIndividuo) {
         Individuo nuevoIndividuo = null;
-        
+
         return nuevoIndividuo;
     }
 //  Metodo para mutar al individuo
@@ -133,22 +139,29 @@ public class Individuo {
      * Metodo que calcula la aptitud del individuo
      * recibe como parametro un arreglo de materiales ingresados por el usuario
      */
-    
+
     public float evaluarAptitud(int[] matIngs) {
+
         float nuevaAptitud = 0;
         int[] matMinimos = calcularMaterialesMinimos();
 //        int[] matMaximos = calcularMaterialesMaximos();
         int[] diferencia = new int[8];
-        
+//        int[] remanenteMateriales = new int[8];
+
         for (int i = 0; i < diferencia.length; i++) {
             diferencia[i] = matIngs[i] - matMinimos[i];
         }
+
+//        for (int i = 0; i < remanenteMateriales.length; i++) {
+//            remanenteMateriales[i] = matIngs[i] - matMaximos[i];
+//        }
+
         /*
          * Aca se va a preguntar por la factibilidad del individuo, es decir, si
          * los materiales que solicita el individuo estan dentro de los ingre-
          * -sados por el usario.
          */
-        
+
         if (factibilidad(diferencia)) {
             /*
              * En es este caso el individuo es factible, hay que ver la utilidad
@@ -159,7 +172,7 @@ public class Individuo {
              *Por ser factibles se le suma la utildidad. Ésta no sera lineal, sino
              *que se elevará al cubo el valor
              */
-            
+
             nuevaAptitud += Math.pow(calcularUtilidad(), 3);
 
             /*
@@ -170,18 +183,22 @@ public class Individuo {
                  * Si no hay remanente de materiales, se los descontara en puntos
                  * a la aptitud.
                  */
-                for (int i : diferencia) {
-                    nuevaAptitud -= diferencia[i];                    
+                int diferenciaTotal = 0;
+                for (int i = 0; i < 4; i++) {
+                    if (diferencia[i] < 0) {
+                        diferenciaTotal += Math.pow(diferencia[i], 2);
+                    }
                 }
+                nuevaAptitud -= diferenciaTotal;
             } else {
                 /*
                  * El individuo que utilice los materiales de manera más eficiente
                  * (que el remanente de materiales sea 0), obtendra un premio en puntos
                  * de aptitud
                  */
-                nuevaAptitud += nuevaAptitud * 0.30;
+                nuevaAptitud += (nuevaAptitud * 0.50);
             }
-            
+
         } else {
             /*
              * Aca, se castiga severamente al individuo con una aptitud muuuuy
@@ -196,11 +213,11 @@ public class Individuo {
             }
             nuevaAptitud -= (9999 + diferenciaTotal);
         }
-        
+
         setAptitud(nuevaAptitud);
         return nuevaAptitud;
     }
-    
+
     private int[] calcularMaterialesMinimos() {
         int[] materiales = new int[8];
         for (int i = 0; i < materiales.length; i++) {
@@ -209,16 +226,16 @@ public class Individuo {
         }
         return materiales;
     }
-    
-    private int[] calcularMaterialesMaximos() {
+
+    private int[] calcularMaterialesRango() {
         int[] materiales = new int[8];
         for (int i = 0; i < materiales.length; i++) {
-            materiales[i] = p1 * MMaximos[0][i] + p2 * MMaximos[1][i]
-                    + p3 * MMaximos[2][i] + p4 * MMaximos[3][i];
+            materiales[i] = p1 * Rangos[0][i] + p2 * Rangos[1][i]
+                    + p3 * Rangos[2][i] + p4 * Rangos[3][i];
         }
         return materiales;
     }
-    
+
     private boolean factibilidad(int[] diferencia) {
         boolean valor = true;
         for (int i = 0; i < diferencia.length; i++) {
@@ -228,30 +245,43 @@ public class Individuo {
         }
         return valor;
     }
-    
+
     private boolean eficienteConRecursos(int[] diferencia) {
-        boolean valor = true;
-        for (int i = 0; i < diferencia.length; i++) {
-            if (diferencia[i] != 0) {
-                valor = false;
+        /*
+         * Devuelve verdadero si (diferencia - rango*cantDeProductos)<=0
+         * Si es es menor pone 0 en la diferencia.
+         * Los valores de diferencia que queden positivos, seran el remanente
+         * del material.
+         */
+        boolean valor = false;
+        int[] rangos = calcularMaterialesRango();
+
+        for (int i = 0; i < rangos.length; i++) {
+            diferencia[i] -= rangos[i];
+            if ((diferencia[i]) <= 0) {
+                valor = true;
+                diferencia[i] = 0;
             }
         }
+
         return valor;
     }
-    
+
     private float calcularUtilidad() {
         float utilidad;
         utilidad = Utilidad[0] * p1 + Utilidad[1] * p2
                 + Utilidad[2] * p3 + Utilidad[3] * p4;
         return utilidad;
     }
-    //    public static void main(String[] args) {
-//        Individuo a = Individuo.crearUnIndividuo(10, 2, 3, 3);
-//        for (int i = 0; i < 4; i++) {
-//            for (int j = 0; j < 8; j++) {
-//                System.out.print(Individuo.MMinimos[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-//    }
+
+    public static void main(String[] args) {
+        Individuo a = Individuo.crearUnIndividuo(10, 2, 3, 3);
+        for (int i = 0; i < 4; i++) {
+            System.out.print("{");
+            for (int j = 0; j < 8; j++) {
+                System.out.print(Individuo.MMaximos[i][j] - Individuo.MMinimos[i][j] + ",");
+            }
+            System.out.println("}");
+        }
+    }
 }
