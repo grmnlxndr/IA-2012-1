@@ -56,12 +56,12 @@ public class Poblacion {
         poblado = auxiliar;
     }
     
-    public float evaluarAptitud(int m1, int m2, int m3, int m4, int m5, int m6, int m7, int m8) {
+    public float evaluarAptitud(int[] matIngresados) {
 
         float aptitudPoblacion = 0;
 
         for (int i = 0; i < Poblacion.CANTIDAD_POBLACION; i++) {
-            aptitudPoblacion += poblado.get(i).evaluarAptitud(m1, m2, m3, m4, m5, m6, m7, m8);
+            aptitudPoblacion += poblado.get(i).evaluarAptitud(matIngresados);
         }
 
         //calculo el promedio de al aptitud de la poblacion
