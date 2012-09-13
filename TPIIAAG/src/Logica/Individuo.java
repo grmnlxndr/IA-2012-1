@@ -148,14 +148,39 @@ public class Individuo {
          * los materiales que solicita el individuo estan dentro de los ingre-
          * -sados por el usario.
          */
-
+        
         if (factibilidad(diferencia)) {
             /*
              * En es este caso el individuo es factible, hay que ver la utilidad
              * y los materiales remanentes que deja.
              */
-            //Por ser factibles se le suma la utildidad
-            nuevaAptitud += calcularUtilidad();
+
+            /*
+             *Por ser factibles se le suma la utildidad. Ésta no sera lineal, sino
+             *que se elevará al cubo el valor
+             */
+            
+            nuevaAptitud += Math.pow(calcularUtilidad(), 3);
+
+            /*
+             * Aca se trata la puntuacion po utilizacion de los recursos
+             */
+            if (!eficienteConRecursos(diferencia)) {
+                /*
+                 * Si no hay remanente de materiales, se los descontara en puntos
+                 * a la aptitud.
+                 */
+                for (int i : diferencia) {
+                    nuevaAptitud -= diferencia[i];                    
+                }
+            } else {
+                /*
+                 * El individuo que utilice los materiales de manera más eficiente
+                 * (que el remanente de materiales sea 0), obtendra un premio en puntos
+                 * de aptitud
+                 */
+                nuevaAptitud += nuevaAptitud * 0.30;
+            }
             
         } else {
             /*
@@ -163,10 +188,15 @@ public class Individuo {
              * baja, debido a que no es factible porque pide mas materiales que
              * los ingresados/existentes.
              */
-            nuevaAptitud -= (9999 + calcularUtilidad());
+            int diferenciaTotal = 0;
+            for (int i = 0; i < 4; i++) {
+                if (diferencia[i] < 0) {
+                    diferenciaTotal += Math.pow(diferencia[i], 2);
+                }
+            }
+            nuevaAptitud -= (9999 + diferenciaTotal);
         }
-
-        //FINCODIGO
+        
         setAptitud(nuevaAptitud);
         return nuevaAptitud;
     }
@@ -193,6 +223,16 @@ public class Individuo {
         boolean valor = true;
         for (int i = 0; i < diferencia.length; i++) {
             if (diferencia[i] < 0) {
+                valor = false;
+            }
+        }
+        return valor;
+    }
+    
+    private boolean eficienteConRecursos(int[] diferencia) {
+        boolean valor = true;
+        for (int i = 0; i < diferencia.length; i++) {
+            if (diferencia[i] != 0) {
                 valor = false;
             }
         }
