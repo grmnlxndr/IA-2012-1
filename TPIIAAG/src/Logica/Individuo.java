@@ -6,6 +6,7 @@ package Logica;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Random;
 
 /**
  *
@@ -126,13 +127,44 @@ public class Individuo {
     }
 
     //Metodo de Cruza de dos individuos
-    public Individuo cruzarseCon(Individuo unIndividuo) {
+    public Individuo cruzarseNivelIndividuo(Individuo unIndividuo, byte corte) {
         Individuo nuevoIndividuo = null;
-
+        switch (corte) {
+            case 0:
+                nuevoIndividuo.setP1(this.getP1());
+                nuevoIndividuo.setP2(unIndividuo.getP2());
+                nuevoIndividuo.setP3(unIndividuo.getP3());
+                nuevoIndividuo.setP4(unIndividuo.getP4());
+                break;
+            case 1:
+                nuevoIndividuo.setP1(this.getP1());
+                nuevoIndividuo.setP2(this.getP2());
+                nuevoIndividuo.setP3(unIndividuo.getP3());
+                nuevoIndividuo.setP4(unIndividuo.getP4());
+                break;
+            case 2:
+                nuevoIndividuo.setP1(this.getP1());
+                nuevoIndividuo.setP2(this.getP2());
+                nuevoIndividuo.setP3(this.getP3());
+                nuevoIndividuo.setP4(unIndividuo.getP4());
+        }
         return nuevoIndividuo;
     }
-//  Metodo para mutar al individuo
 
+    public Individuo cruzarseNivelProducto(Individuo unIndividuo, Random random) {
+        //FUNCIONA
+        Individuo nuevoIndividuo;
+        int posicion = random.nextInt(9);
+        posicion = (int) Math.pow(2, posicion);
+        posicion += (posicion - 1);
+        short auxiliar1 = (short) (this.getP1() & posicion);
+        posicion = posicion ^ 1023;
+        short auxiliar2 = (short) (unIndividuo.getP1() & posicion);
+        nuevoIndividuo = crearUnIndividuo((short) (auxiliar1 | auxiliar2), 0, 0, 0);
+        return nuevoIndividuo;
+    }
+
+//  Metodo para mutar al individuo
     public void mutarse() {
     }
     /*
@@ -275,13 +307,29 @@ public class Individuo {
     }
 
     public static void main(String[] args) {
-        Individuo a = Individuo.crearUnIndividuo(10, 2, 3, 3);
-        for (int i = 0; i < 4; i++) {
-            System.out.print("{");
-            for (int j = 0; j < 8; j++) {
-                System.out.print(Individuo.MMaximos[i][j] - Individuo.MMinimos[i][j] + ",");
-            }
-            System.out.println("}");
-        }
+//        Individuo a = Individuo.crearUnIndividuo(10, 2, 3, 3);
+//        for (int i = 0; i < 4; i++) {
+//            System.out.print("{");
+//            for (int j = 0; j < 8; j++) {
+//                System.out.print(Individuo.MMaximos[i][j] - Individuo.MMinimos[i][j] + ",");
+//            }
+//            System.out.println("}");
+//        }
+
+        Individuo ind1 = crearUnIndividuo(0b0110111010, 0, 0, 0);
+        Individuo ind2 = crearUnIndividuo(0b1111000101, 0, 0, 0);
+        Random random = new Random();
+
+        Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
+        int posicion = random.nextInt(9);
+        System.out.println("random " + posicion);
+        posicion = (int) Math.pow(2, posicion);
+        posicion += (posicion - 1);
+        short auxilar = (short) (ind1.getP1() & posicion);
+        posicion = posicion ^ 1023;
+        short auxiliar2 = (short) (ind2.getP1() & posicion);
+        auxilar = (short) (auxilar | auxiliar2);
+        nuevoIndividuo.setP1(auxilar);
+        System.out.println(nuevoIndividuo.getP1());
     }
 }

@@ -14,6 +14,7 @@ import java.util.Random;
 public class Poblacion {
     
     public static final short CANTIDAD_POBLACION = 1000;
+    public static final byte CANTIDAD_SELECCION_ELITISTA = 5; 
     
     private ArrayList<Individuo> poblado = new ArrayList(CANTIDAD_POBLACION);
     private Random random = new Random();
@@ -23,6 +24,14 @@ public class Poblacion {
         Individuo nuevo = Individuo.crearUnIndividuo(p1, p2, p3, p4);
         poblado.add(nuevo);
         return nuevo;
+    }
+    
+    public void nuevoIndividuo(Individuo nuevo){
+        poblado.add(nuevo); 
+    }
+    
+    public Individuo getIndividuo(int index){
+        return poblado.get(index);
     }
     
     public void generarPoblacionIncial(){
@@ -70,5 +79,12 @@ public class Poblacion {
         return aptitudPoblacion;
     }
     
-    
+    public Poblacion seleccionarPoblacion(){
+        Poblacion nuevaPoblacion = new Poblacion();
+        ordenarPobladoPorAptitud();
+        for (int i = 0; i < CANTIDAD_SELECCION_ELITISTA; i++) {
+            nuevaPoblacion.nuevoIndividuo(poblado.get(i));
+        }
+        return nuevaPoblacion;
+    }
 }
