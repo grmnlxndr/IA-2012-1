@@ -153,14 +153,16 @@ public class Individuo {
 
     public Individuo cruzarseNivelProducto(Individuo unIndividuo, Random random) {
         //FUNCIONA
-        Individuo nuevoIndividuo;
-        int posicion = random.nextInt(9);
-        posicion = (int) Math.pow(2, posicion);
-        posicion += (posicion - 1);
-        short auxiliar1 = (short) (this.getP1() & posicion);
-        posicion = posicion ^ 1023;
-        short auxiliar2 = (short) (unIndividuo.getP1() & posicion);
-        nuevoIndividuo = crearUnIndividuo((short) (auxiliar1 | auxiliar2), 0, 0, 0);
+        Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
+        for (byte i = 0; i < 4; i++) {
+            int posicion = random.nextInt(9);
+            posicion = (int) Math.pow(2, posicion);
+            posicion += (posicion - 1);
+            short auxiliar1 = (short) (this.getP1() & posicion);
+            posicion = posicion ^ 1023;
+            short auxiliar2 = (short) (getProducto(i) & posicion);
+            nuevoIndividuo.setProducto(i, (short) (auxiliar1 | auxiliar2));
+        }
         return nuevoIndividuo;
     }
 
@@ -168,8 +170,8 @@ public class Individuo {
     public void mutarse() {
     }
     /*
-     * Metodo que calcula la aptitud del individuo
-     * recibe como parametro un arreglo de materiales ingresados por el usuario
+     * Metodo que calcula la aptitud del individuo recibe como parametro un
+     * arreglo de materiales ingresados por el usuario
      */
 
     public float evaluarAptitud(int[] matIngs) {
@@ -201,8 +203,8 @@ public class Individuo {
              */
 
             /*
-             *Por ser factibles se le suma la utildidad. Ésta no sera lineal, sino
-             *que se elevará al cubo el valor
+             * Por ser factibles se le suma la utildidad. Ésta no sera lineal,
+             * sino que se elevará al cubo el valor
              */
 
             nuevaAptitud += Math.pow(calcularUtilidad(), 3);
@@ -212,8 +214,8 @@ public class Individuo {
              */
             if (!eficienteConRecursos(diferencia)) {
                 /*
-                 * Si no hay remanente de materiales, se los descontara en puntos
-                 * a la aptitud.
+                 * Si no hay remanente de materiales, se los descontara en
+                 * puntos a la aptitud.
                  */
                 int diferenciaTotal = 0;
                 for (int i = 0; i < 4; i++) {
@@ -224,9 +226,9 @@ public class Individuo {
                 nuevaAptitud -= diferenciaTotal;
             } else {
                 /*
-                 * El individuo que utilice los materiales de manera más eficiente
-                 * (que el remanente de materiales sea 0), obtendra un premio en puntos
-                 * de aptitud
+                 * El individuo que utilice los materiales de manera más
+                 * eficiente (que el remanente de materiales sea 0), obtendra un
+                 * premio en puntos de aptitud
                  */
                 nuevaAptitud += (nuevaAptitud * 0.50);
             }
@@ -280,10 +282,9 @@ public class Individuo {
 
     private boolean eficienteConRecursos(int[] diferencia) {
         /*
-         * Devuelve verdadero si (diferencia - rango*cantDeProductos)<=0
-         * Si es es menor pone 0 en la diferencia.
-         * Los valores de diferencia que queden positivos, seran el remanente
-         * del material.
+         * Devuelve verdadero si (diferencia - rango*cantDeProductos)<=0 Si es
+         * es menor pone 0 en la diferencia. Los valores de diferencia que
+         * queden positivos, seran el remanente del material.
          */
         boolean valor = false;
         int[] rangos = calcularMaterialesRango();
@@ -306,6 +307,49 @@ public class Individuo {
         return utilidad;
     }
 
+    public short getProducto(byte nroProducto) {
+        short var;
+        switch (nroProducto) {
+            case 0:
+                var = getP1();
+                break;
+            case 1:
+                var = getP2();
+                break;
+            case 2:
+                var = getP3();
+                break;
+            default:
+                var = getP4();
+                break;
+        }
+        return var;
+    }
+    /*
+     * El metodo setProducto recibe el nro del prducto al que se le va a asignar
+     * el valor. Los valores de nro de prducto son: 0 para P1, 1 para P2, 2 para
+     * P3 y 3 para P4. En el caso de que se agregue cualquier otro nro el valor
+     * no sera seteado.
+     */
+
+    public void setProducto(byte nroProducto, short valor) {
+        short var;
+        switch (nroProducto) {
+            case 0:
+                setP1(valor);
+                break;
+            case 1:
+                setP2(valor);
+                break;
+            case 2:
+                setP3(valor);
+                break;
+            case 3:
+                setP4(valor);
+                break;
+        }
+    }
+
     public static void main(String[] args) {
 //        Individuo a = Individuo.crearUnIndividuo(10, 2, 3, 3);
 //        for (int i = 0; i < 4; i++) {
@@ -316,20 +360,34 @@ public class Individuo {
 //            System.out.println("}");
 //        }
 
-        Individuo ind1 = crearUnIndividuo(0b0110111010, 0, 0, 0);
-        Individuo ind2 = crearUnIndividuo(0b1111000101, 0, 0, 0);
+        Individuo ind1 = crearUnIndividuo(1111,989,456,778);
+        Individuo ind2 = crearUnIndividuo(15,111,450,99);
         Random random = new Random();
 
-        Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
-        int posicion = random.nextInt(9);
-        System.out.println("random " + posicion);
-        posicion = (int) Math.pow(2, posicion);
-        posicion += (posicion - 1);
-        short auxilar = (short) (ind1.getP1() & posicion);
-        posicion = posicion ^ 1023;
-        short auxiliar2 = (short) (ind2.getP1() & posicion);
-        auxilar = (short) (auxilar | auxiliar2);
-        nuevoIndividuo.setP1(auxilar);
-        System.out.println(nuevoIndividuo.getP1());
+//        Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
+//        int posicion = 2;//random.nextInt(9);
+//        System.out.println("random " + posicion);
+//        posicion = (int) Math.pow(2, posicion);
+//        posicion += (posicion - 1);
+//        short auxilar = (short) (ind1.getP1() & posicion);
+//        posicion = posicion ^ 1023;
+//        short auxiliar2 = (short) (ind2.getP1() & posicion);
+//        auxilar = (short) (auxilar | auxiliar2);
+//        nuevoIndividuo.setP1(auxilar);
+//        System.out.println(nuevoIndividuo.getP1());
+        
+        
+         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
+        for (byte i = 0; i < 4; i++) {
+            int posicion = random.nextInt(9);
+            posicion = (int) Math.pow(2, posicion);
+            posicion += (posicion - 1);
+            short auxiliar1 = (short) (ind1.getProducto(i) & posicion);
+            posicion = posicion ^ 1023;
+            short auxiliar2 = (short) (ind2.getProducto(i) & posicion);
+            nuevoIndividuo.setProducto(i, (short) (auxiliar1 | auxiliar2));
+            System.out.println(nuevoIndividuo.getProducto(i));
+        }
+        
     }
 }
