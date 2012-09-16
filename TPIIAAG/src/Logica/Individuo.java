@@ -127,8 +127,9 @@ public class Individuo {
     }
 
     //Metodo de Cruza de dos individuos
-    public Individuo cruzarseNivelIndividuo(Individuo unIndividuo, byte corte) {
+    public Individuo cruzarseNivelIndividuo(Individuo unIndividuo, Random random) {
         Individuo nuevoIndividuo = null;
+        byte corte = (byte) random.nextInt(3);
         switch (corte) {
             case 0:
                 nuevoIndividuo.setP1(this.getP1());
@@ -152,7 +153,6 @@ public class Individuo {
     }
 
     public Individuo cruzarseNivelProducto(Individuo unIndividuo, Random random) {
-        //FUNCIONA
         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
         for (byte i = 0; i < 4; i++) {
             int posicion = random.nextInt(9);
@@ -377,17 +377,27 @@ public class Individuo {
 //        System.out.println(nuevoIndividuo.getP1());
         
         
-         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
-        for (byte i = 0; i < 4; i++) {
-            int posicion = random.nextInt(9);
-            posicion = (int) Math.pow(2, posicion);
-            posicion += (posicion - 1);
-            short auxiliar1 = (short) (ind1.getProducto(i) & posicion);
-            posicion = posicion ^ 1023;
-            short auxiliar2 = (short) (ind2.getProducto(i) & posicion);
-            nuevoIndividuo.setProducto(i, (short) (auxiliar1 | auxiliar2));
-            System.out.println(nuevoIndividuo.getProducto(i));
-        }
+//         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
+//        for (byte i = 0; i < 4; i++) {
+//            int posicion = random.nextInt(9);
+//            posicion = (int) Math.pow(2, posicion);
+//            posicion += (posicion - 1);
+//            short auxiliar1 = (short) (ind1.getProducto(i) & posicion);
+//            posicion = posicion ^ 1023;
+//            short auxiliar2 = (short) (ind2.getProducto(i) & posicion);
+//            nuevoIndividuo.setProducto(i, (short) (auxiliar1 | auxiliar2));
+//            System.out.println(nuevoIndividuo.getProducto(i));
+        int cont1 = 0;
+        int cont2 = 0;
         
+        for (int i = 0; i < Poblacion.CANTIDAD_POBLACION; i++) {
+            boolean valor = random.nextBoolean();
+            if (valor) {
+                cont1++;
+            }else{
+                cont2++;
+            }
+        }
+        System.out.print(cont1+" "+cont2);
     }
 }

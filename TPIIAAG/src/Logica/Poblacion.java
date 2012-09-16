@@ -12,36 +12,35 @@ import java.util.Random;
  * @author German
  */
 public class Poblacion {
-    
+
     public static final short CANTIDAD_POBLACION = 1000;
-    public static final byte CANTIDAD_SELECCION_ELITISTA = 5; 
-    
+    public static final byte CANTIDAD_SELECCION_ELITISTA = 4;
     private ArrayList<Individuo> poblado = new ArrayList(CANTIDAD_POBLACION);
     private Random random = new Random();
     private float aptitudPromedio = 0;
-    
-    public Individuo nuevoIndividuo(short p1, short p2, short p3, short p4){
+
+    public Individuo nuevoIndividuo(short p1, short p2, short p3, short p4) {
         Individuo nuevo = Individuo.crearUnIndividuo(p1, p2, p3, p4);
         poblado.add(nuevo);
         return nuevo;
     }
-    
-    public void nuevoIndividuo(Individuo nuevo){
-        poblado.add(nuevo); 
+
+    public void nuevoIndividuo(Individuo nuevo) {
+        poblado.add(nuevo);
     }
-    
-    public Individuo getIndividuo(int index){
+
+    public Individuo getIndividuo(int index) {
         return poblado.get(index);
     }
-    
-    public void generarPoblacionIncial(){
-        
+
+    public void generarPoblacionIncial() {
+
         for (int i = 0; i < CANTIDAD_POBLACION; i++) {
-            nuevoIndividuo((short) random.nextInt(1024), (short)  random.nextInt(1024),
-                           (short)  random.nextInt(1024),(short)  random.nextInt(1024));
+            nuevoIndividuo((short) random.nextInt(1024), (short) random.nextInt(1024),
+                    (short) random.nextInt(1024), (short) random.nextInt(1024));
         }
     }
-    
+
     public void ordenarPobladoPorAptitud() {
 
         ArrayList<Individuo> auxiliar = new ArrayList(CANTIDAD_POBLACION);
@@ -64,7 +63,7 @@ public class Poblacion {
         }
         poblado = auxiliar;
     }
-    
+
     public float evaluarAptitud(int[] matIngresados) {
 
         float aptitudPoblacion = 0;
@@ -78,13 +77,27 @@ public class Poblacion {
 
         return aptitudPoblacion;
     }
-    
-    public Poblacion seleccionarPoblacion(){
+
+    public Poblacion seleccionarPoblacion() {
         Poblacion nuevaPoblacion = new Poblacion();
         ordenarPobladoPorAptitud();
         for (int i = 0; i < CANTIDAD_SELECCION_ELITISTA; i++) {
             nuevaPoblacion.nuevoIndividuo(poblado.get(i));
         }
         return nuevaPoblacion;
+    }
+
+    public void cruzarPoblacion(Poblacion nueva) {
+
+        for (int i = 0; i < (CANTIDAD_POBLACION - CANTIDAD_SELECCION_ELITISTA); i = i + 2) {
+            boolean rango = random.nextBoolean();
+            if (rango) {
+                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelIndividuo(this.getIndividuo(i + 1),random));
+                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelIndividuo(this.getIndividuo(i),random));
+            } else {
+                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelProducto(this.getIndividuo(i + 1),random));
+                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelProducto(this.getIndividuo(i),random));
+            };
+        }
     }
 }
