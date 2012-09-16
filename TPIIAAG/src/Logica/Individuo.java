@@ -152,15 +152,14 @@ public class Individuo {
         return nuevoIndividuo;
     }
 
-    public Individuo cruzarseNivelProducto(Individuo unIndividuo, Random random) {
+    public Individuo cruzarseNivelProducto(Individuo unIndividuo,int posicion) {
         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
         for (byte i = 0; i < 4; i++) {
-            int posicion = random.nextInt(9);
             posicion = (int) Math.pow(2, posicion);
             posicion += (posicion - 1);
-            short auxiliar1 = (short) (this.getP1() & posicion);
-            posicion = posicion ^ 1023;
-            short auxiliar2 = (short) (getProducto(i) & posicion);
+            short auxiliar1 = (short) (this.getProducto(i) & posicion);
+            posicion = posicion ^ 1023; //para tomar la otra parte del corte
+            short auxiliar2 = (short) (unIndividuo.getProducto(i) & posicion);
             nuevoIndividuo.setProducto(i, (short) (auxiliar1 | auxiliar2));
         }
         return nuevoIndividuo;
@@ -168,6 +167,15 @@ public class Individuo {
 
 //  Metodo para mutar al individuo
     public void mutarse() {
+
+        Random random = new Random();
+
+        short posicion = (short) Math.pow(2, random.nextInt(10));
+        byte producto = (byte) random.nextInt(4);
+
+
+        this.setProducto(producto, (short) (this.getProducto(producto) ^ posicion));
+
     }
     /*
      * Metodo que calcula la aptitud del individuo recibe como parametro un
@@ -360,9 +368,17 @@ public class Individuo {
 //            System.out.println("}");
 //        }
 
-        Individuo ind1 = crearUnIndividuo(1111,989,456,778);
-        Individuo ind2 = crearUnIndividuo(15,111,450,99);
+        Individuo ind1 = crearUnIndividuo(1000, 989, 456, 778);
+        Individuo ind2 = crearUnIndividuo(15, 111, 450, 99);
         Random random = new Random();
+        
+//        Individuo nuevo = ind1.cruzarseNivelProducto(ind2, 5);
+//        System.out.println(nuevo.getP1()); 
+//        nuevo = ind2.cruzarseNivelProducto(ind1, 5);
+//        System.out.println(nuevo.getP1()); 
+        
+//        ind1.mutarse();
+//        System.out.println(ind1.p1);
 
 //        Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
 //        int posicion = 2;//random.nextInt(9);
@@ -375,8 +391,8 @@ public class Individuo {
 //        auxilar = (short) (auxilar | auxiliar2);
 //        nuevoIndividuo.setP1(auxilar);
 //        System.out.println(nuevoIndividuo.getP1());
-        
-        
+
+
 //         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
 //        for (byte i = 0; i < 4; i++) {
 //            int posicion = random.nextInt(9);
@@ -387,17 +403,19 @@ public class Individuo {
 //            short auxiliar2 = (short) (ind2.getProducto(i) & posicion);
 //            nuevoIndividuo.setProducto(i, (short) (auxiliar1 | auxiliar2));
 //            System.out.println(nuevoIndividuo.getProducto(i));
-        int cont1 = 0;
-        int cont2 = 0;
         
-        for (int i = 0; i < Poblacion.CANTIDAD_POBLACION; i++) {
-            boolean valor = random.nextBoolean();
-            if (valor) {
-                cont1++;
-            }else{
-                cont2++;
-            }
-        }
-        System.out.print(cont1+" "+cont2);
+        
+//        int cont1 = 0;
+//        int cont2 = 0;
+//
+//        for (int i = 0; i < Poblacion.CANTIDAD_POBLACION; i++) {
+//            boolean valor = random.nextBoolean();
+//            if (valor) {
+//                cont1++;
+//            } else {
+//                cont2++;
+//            }
+//        }
+//        System.out.print(cont1 + " " + cont2);
     }
 }

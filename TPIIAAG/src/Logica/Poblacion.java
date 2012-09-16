@@ -4,8 +4,11 @@
  */
 package Logica;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Random;
+import principal.TPIIAAG;
 
 /**
  *
@@ -15,9 +18,24 @@ public class Poblacion {
 
     public static final short CANTIDAD_POBLACION = 1000;
     public static final byte CANTIDAD_SELECCION_ELITISTA = 4;
+    public static final float PMMax = 0.4f;
+    public static final float PMMin = 0f;
+    public static final String PROP_APTITUDPROMEDIO = "aptitudPromedio";
+    public static final String PROP_PMUTACION = "pMutacion";
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private ArrayList<Individuo> poblado = new ArrayList(CANTIDAD_POBLACION);
     private Random random = new Random();
-    private float aptitudPromedio = 0;
+    private float aptitudPromedio = 0f;
+    private float pMutacion;
+
+    public Poblacion(int nroIteracion) {
+        float relacion = nroIteracion / TPIIAAG.CANTIDAD_ITERACIONES;
+        if (relacion < PMMax) {
+            pMutacion = relacion;
+        } else {
+            pMutacion = PMMax;
+        }
+    }
 
     public Individuo nuevoIndividuo(short p1, short p2, short p3, short p4) {
         Individuo nuevo = Individuo.crearUnIndividuo(p1, p2, p3, p4);
@@ -78,8 +96,8 @@ public class Poblacion {
         return aptitudPoblacion;
     }
 
-    public Poblacion seleccionarPoblacion() {
-        Poblacion nuevaPoblacion = new Poblacion();
+    public Poblacion seleccionarPoblacion(int nroIteracion) {
+        Poblacion nuevaPoblacion = new Poblacion(nroIteracion);
         ordenarPobladoPorAptitud();
         for (int i = 0; i < CANTIDAD_SELECCION_ELITISTA; i++) {
             nuevaPoblacion.nuevoIndividuo(poblado.get(i));
@@ -92,12 +110,43 @@ public class Poblacion {
         for (int i = 0; i < (CANTIDAD_POBLACION - CANTIDAD_SELECCION_ELITISTA); i = i + 2) {
             boolean rango = random.nextBoolean();
             if (rango) {
-                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelIndividuo(this.getIndividuo(i + 1),random));
-                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelIndividuo(this.getIndividuo(i),random));
+                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelIndividuo(this.getIndividuo(i + 1), random));
+                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelIndividuo(this.getIndividuo(i), random));
             } else {
-                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelProducto(this.getIndividuo(i + 1),random));
-                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelProducto(this.getIndividuo(i),random));
+                int posicion = random.nextInt(9);//va 9 porque son 9 posiciones de corte para 10 bits
+                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelProducto(this.getIndividuo(i + 1),posicion));
+                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelProducto(this.getIndividuo(i),posicion));
             };
         }
+    }
+
+    public float getAptitudPromedio() {
+        return aptitudPromedio;
+    }
+
+    public void setAptitudPromedio(float aptitudPromedio) {
+        float valorViejo = this.aptitudPromedio;
+        this.aptitudPromedio = aptitudPromedio;
+        pcs.firePropertyChange(PROP_APTITUDPROMEDIO, valorViejo, aptitudPromedio);
+    }
+
+    public float getpMutacion() {
+        return pMutacion;
+    }
+
+    public void setpMutacion(float pMutacion) {
+        float valorViejo = this.pMutacion;
+        this.pMutacion = pMutacion;
+        pcs.firePropertyChange(PROP_APTITUDPROMEDIO, valorViejo, pMutacion);
+    }
+
+    //  Agregar un escuchador para las propiedades de esta clase
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+//  Quitar un escuchador
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
     }
 }

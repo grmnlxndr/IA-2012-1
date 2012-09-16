@@ -9,12 +9,9 @@ package principal;
  * @author German
  */
 public class TPIIAAG {
+    
+    public static final int CANTIDAD_ITERACIONES = 1000;
 
-    /**
-     * nada
-     *
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
 
     }
