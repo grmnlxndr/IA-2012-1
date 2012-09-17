@@ -4,6 +4,7 @@
  */
 package Logica;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -27,6 +28,17 @@ public class Poblacion {
     private Random random = new Random();
     private float aptitudPromedio = 0f;
     private float pMutacion;
+    private PropertyChangeListener pcl = new PropertyChangeListener() {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+//            veeerrr lo hice muy por arriba y con sueño
+            if (evt.getPropertyName().equals(Individuo.PROP_APTITUD)){
+                float nuevaAP = aptitudPromedio + ((float) evt.getNewValue()/CANTIDAD_POBLACION);
+                setAptitudPromedio(nuevaAP);
+            }
+        }
+    };
 
     public Poblacion(int nroIteracion) {
         float relacion = nroIteracion / TPIIAAG.CANTIDAD_ITERACIONES;
