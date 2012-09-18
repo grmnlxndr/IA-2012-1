@@ -49,7 +49,7 @@ public class Individuo {
 
 //  Constructor
     private Individuo(short p1, short p2, short p3, short p4) {
-        setAptitud(0);
+        setAptitud(0f);
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
@@ -128,7 +128,7 @@ public class Individuo {
 
     //Metodo de Cruza de dos individuos
     public Individuo cruzarseNivelIndividuo(Individuo unIndividuo, Random random) {
-        Individuo nuevoIndividuo = null;
+        Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
         byte corte = (byte) random.nextInt(3);
         switch (corte) {
             case 0:
@@ -253,7 +253,7 @@ public class Individuo {
                     diferenciaTotal += Math.pow(diferencia[i], 2);
                 }
             }
-            nuevaAptitud -= (9999 + diferenciaTotal);
+            nuevaAptitud = nuevaAptitud - diferenciaTotal;
         }
 
         setAptitud(nuevaAptitud);

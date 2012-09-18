@@ -4,7 +4,6 @@
  */
 package Logica;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -27,26 +26,9 @@ public class Poblacion {
     private ArrayList<Individuo> poblado = new ArrayList(CANTIDAD_POBLACION);
     private Random random = new Random();
     private float aptitudPromedio = 0f;
-    private float pMutacion;
-    private PropertyChangeListener pcl = new PropertyChangeListener() {
+    private float pMutacion = PMMax;
 
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-//            veeerrr lo hice muy por arriba y con sueño
-            if (evt.getPropertyName().equals(Individuo.PROP_APTITUD)){
-                float nuevaAP = aptitudPromedio + ((float) evt.getNewValue()/CANTIDAD_POBLACION);
-                setAptitudPromedio(nuevaAP);
-            }
-        }
-    };
-
-    public Poblacion(int nroIteracion) {
-        float relacion = nroIteracion / TPIIAAG.CANTIDAD_ITERACIONES;
-        if (relacion < PMMax) {
-            pMutacion = relacion;
-        } else {
-            pMutacion = PMMax;
-        }
+    public Poblacion() {
     }
 
     public Individuo nuevoIndividuo(short p1, short p2, short p3, short p4) {
@@ -96,7 +78,7 @@ public class Poblacion {
 
     public float evaluarAptitud(int[] matIngresados) {
 
-        float aptitudPoblacion = 0;
+        float aptitudPoblacion = 0f;
 
         for (int i = 0; i < Poblacion.CANTIDAD_POBLACION; i++) {
             aptitudPoblacion += poblado.get(i).evaluarAptitud(matIngresados);
@@ -108,8 +90,8 @@ public class Poblacion {
         return aptitudPoblacion;
     }
 
-    public Poblacion seleccionarPoblacion(int nroIteracion) {
-        Poblacion nuevaPoblacion = new Poblacion(nroIteracion);
+    public Poblacion seleccionarPoblacion() {
+        Poblacion nuevaPoblacion = new Poblacion();
         ordenarPobladoPorAptitud();
         for (int i = 0; i < CANTIDAD_SELECCION_ELITISTA; i++) {
             nuevaPoblacion.nuevoIndividuo(poblado.get(i));
@@ -119,15 +101,15 @@ public class Poblacion {
 
     public void cruzarPoblacion(Poblacion nueva) {
 
-        for (int i = 0; i < (CANTIDAD_POBLACION - CANTIDAD_SELECCION_ELITISTA); i = i + 2) {
+        for (int i = (CANTIDAD_SELECCION_ELITISTA-1); i < (CANTIDAD_POBLACION - CANTIDAD_SELECCION_ELITISTA -1); i = i + 2) {
             boolean rango = random.nextBoolean();
             if (rango) {
                 nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelIndividuo(this.getIndividuo(i + 1), random));
                 nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelIndividuo(this.getIndividuo(i), random));
             } else {
                 int posicion = random.nextInt(9);//va 9 porque son 9 posiciones de corte para 10 bits
-                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelProducto(this.getIndividuo(i + 1),posicion));
-                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelProducto(this.getIndividuo(i),posicion));
+                nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelProducto(this.getIndividuo(i + 1), posicion));
+                nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelProducto(this.getIndividuo(i), posicion));
             };
         }
     }
@@ -150,6 +132,21 @@ public class Poblacion {
         float valorViejo = this.pMutacion;
         this.pMutacion = pMutacion;
         pcs.firePropertyChange(PROP_APTITUDPROMEDIO, valorViejo, pMutacion);
+    }
+
+    public void mutarPoblacion(int nroIteracion) {
+        float relacion = nroIteracion / (TPIIAAG.CANTIDAD_ITERACIONES * 10);
+        if (pMutacion > PMMin) {
+            pMutacion -= relacion;
+        } else {
+            pMutacion = PMMin;
+        }
+        for (Individuo individuo : poblado) {
+            float nroAleatorio = random.nextFloat();
+            if (nroAleatorio <= pMutacion) {
+                individuo.mutarse();
+            }
+        }
     }
 
     //  Agregar un escuchador para las propiedades de esta clase
