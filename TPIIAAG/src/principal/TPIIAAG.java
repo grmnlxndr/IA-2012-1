@@ -16,12 +16,13 @@ public class TPIIAAG {
 
     public static final int CANTIDAD_ITERACIONES = 1000;
     private List<Poblacion> Generaciones = new ArrayList(CANTIDAD_ITERACIONES);
-    private final int mIngresados[] = {100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000};
+    private final int mIngresados[] = {700, 450, 380, 595, 727, 
+        1102, 826, 494};
     private int iteracionActual = 0;
 
     public void ejecutar(int cantidadIteraciones) {
 
-        Generaciones.add(this.GeneracionInicial());
+        Generaciones.add(this.generacionInicial());
         Generaciones.get(0).evaluarAptitud(mIngresados);
         while (!condicionParada(cantidadIteraciones)) {
             Poblacion actual = Generaciones.get(iteracionActual);
@@ -36,13 +37,20 @@ public class TPIIAAG {
             Generaciones.add(seleccionada);
             iteracionActual++;
         }
+        Generaciones.get(CANTIDAD_ITERACIONES-1).ordenarPobladoPorAptitud();
+        System.out.println(Generaciones.get(CANTIDAD_ITERACIONES-1).getIndividuo(0).getAptitud());
+        System.out.println(Generaciones.get(CANTIDAD_ITERACIONES-1).getIndividuo(0).getP1());
+        System.out.println(Generaciones.get(CANTIDAD_ITERACIONES-1).getIndividuo(0).getP2());
+        System.out.println(Generaciones.get(CANTIDAD_ITERACIONES-1).getIndividuo(0).getP3());
+        System.out.println(Generaciones.get(CANTIDAD_ITERACIONES-1).getIndividuo(0).getP4());
+        System.out.println(Generaciones.get(CANTIDAD_ITERACIONES-1).getIndividuo(0).calcularUtilidad());
     }
 
     private Boolean condicionParada(int cantidadIteraciones) {
         return cantidadIteraciones == iteracionActual;
     }
 
-    public Poblacion GeneracionInicial() {
+    public Poblacion generacionInicial() {
         /*
          * VEEEERR EL TEMA DE GENERAR POBLACION INICIAL DONDE TIENE QUE IR. ¿EN
          * POBLACION O EN CONTROLADOR DE POBLACION (ESTA)? DE QUIEN ES LA
@@ -56,5 +64,6 @@ public class TPIIAAG {
     public static void main(String[] args) {
         TPIIAAG principal = new TPIIAAG();
         principal.ejecutar(CANTIDAD_ITERACIONES);
+        
     }
 }

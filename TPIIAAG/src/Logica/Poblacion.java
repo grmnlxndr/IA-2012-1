@@ -17,13 +17,13 @@ import principal.TPIIAAG;
 public class Poblacion {
 
     public static final short CANTIDAD_POBLACION = 1000;
-    public static final byte CANTIDAD_SELECCION_ELITISTA = 4;
+    public static final byte CANTIDAD_SELECCION_ELITISTA = 4; //SOLO NROS PARES. ¿¿por que?? XQ SI!
     public static final float PMMax = 0.4f;
     public static final float PMMin = 0f;
     public static final String PROP_APTITUDPROMEDIO = "aptitudPromedio";
     public static final String PROP_PMUTACION = "pMutacion";
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private ArrayList<Individuo> poblado = new ArrayList(CANTIDAD_POBLACION);
+    private ArrayList<Individuo> poblado = new ArrayList();
     private Random random = new Random();
     private float aptitudPromedio = 0f;
     private float pMutacion = PMMax;
@@ -62,7 +62,7 @@ public class Poblacion {
 
         for (int i = 0; i < CANTIDAD_POBLACION; i++) {
             elegido = null;
-            maxF = -2000000000;
+            maxF = Float.NEGATIVE_INFINITY;
             for (Individuo individuo : borrador) {
 
                 if (individuo.getAptitud() >= maxF) {
@@ -101,8 +101,8 @@ public class Poblacion {
 
     public void cruzarPoblacion(Poblacion nueva) {
 
-        for (int i = (CANTIDAD_SELECCION_ELITISTA-1); i < (CANTIDAD_POBLACION - CANTIDAD_SELECCION_ELITISTA -1); i = i + 2) {
-            boolean rango = random.nextBoolean();
+        for (int i = (CANTIDAD_SELECCION_ELITISTA); i < (CANTIDAD_POBLACION - 1); i = i + 2) {
+            boolean rango = false;//random.nextBoolean();
             if (rango) {
                 nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelIndividuo(this.getIndividuo(i + 1), random));
                 nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelIndividuo(this.getIndividuo(i), random));
@@ -110,8 +110,9 @@ public class Poblacion {
                 int posicion = random.nextInt(9);//va 9 porque son 9 posiciones de corte para 10 bits
                 nueva.nuevoIndividuo(this.getIndividuo(i).cruzarseNivelProducto(this.getIndividuo(i + 1), posicion));
                 nueva.nuevoIndividuo(this.getIndividuo(i + 1).cruzarseNivelProducto(this.getIndividuo(i), posicion));
-            };
+            }
         }
+       
     }
 
     public float getAptitudPromedio() {

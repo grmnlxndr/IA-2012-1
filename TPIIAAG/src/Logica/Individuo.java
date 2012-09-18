@@ -154,7 +154,7 @@ public class Individuo {
 
     public Individuo cruzarseNivelProducto(Individuo unIndividuo,int posicion) {
         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
-        int posicionAux;
+        int posicionAux = 0;
         for (byte i = 0; i < 4; i++) {
             posicionAux = (int) Math.pow(2, posicion);
             posicionAux += (posicionAux - 1);
@@ -249,7 +249,7 @@ public class Individuo {
              * los ingresados/existentes.
              */
             int diferenciaTotal = 0;
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 8; i++) {
                 if (diferencia[i] < 0) {
                     diferenciaTotal += Math.pow(diferencia[i], 2);
                 }
@@ -309,7 +309,7 @@ public class Individuo {
         return valor;
     }
 
-    private float calcularUtilidad() {
+    public float calcularUtilidad() {
         float utilidad;
         utilidad = Utilidad[0] * p1 + Utilidad[1] * p2
                 + Utilidad[2] * p3 + Utilidad[3] * p4;
