@@ -154,12 +154,13 @@ public class Individuo {
 
     public Individuo cruzarseNivelProducto(Individuo unIndividuo,int posicion) {
         Individuo nuevoIndividuo = crearUnIndividuo(0, 0, 0, 0);
+        int posicionAux;
         for (byte i = 0; i < 4; i++) {
-            posicion = (int) Math.pow(2, posicion);
-            posicion += (posicion - 1);
-            short auxiliar1 = (short) (this.getProducto(i) & posicion);
-            posicion = posicion ^ 1023; //para tomar la otra parte del corte
-            short auxiliar2 = (short) (unIndividuo.getProducto(i) & posicion);
+            posicionAux = (int) Math.pow(2, posicion);
+            posicionAux += (posicionAux - 1);
+            short auxiliar1 = (short) (this.getProducto(i) & posicionAux);
+            posicionAux = posicionAux ^ 1023; //para tomar la otra parte del corte
+            short auxiliar2 = (short) (unIndividuo.getProducto(i) & posicionAux);
             nuevoIndividuo.setProducto(i, (short) (auxiliar1 | auxiliar2));
         }
         return nuevoIndividuo;
